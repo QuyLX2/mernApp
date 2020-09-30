@@ -1,42 +1,35 @@
 import React, { Fragment, useState } from 'react';
-import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
-import PropTypes from 'prop-types';
-
+import { Link } from 'react-router-dom';
 import { setAlert } from '../../actions/alert';
-import { register } from '../../actions/auth';
-
-const Register = ({ setAlert, register, isAuthenticated }) => {
-  const [formData, setFormData] = useState({
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types'
+const Register = ({ setAlert }) => {
+  const [formData, setFromData] = useState({
     name: '',
     email: '',
     password: '',
-    password2: '',
+    repassword: '',
   });
 
-  const { name, email, password, password2 } = formData;
+  const { name, email, password, repassword } = formData;
 
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const onChange = (e) => {
+    setFromData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (password !== password2) {
-      setAlert('Password do not match', 'danger');
+    if (password !== repassword) {
+      setAlert('Passwords do not match');
     } else {
-      register({ name, email, password });
+      console.log('Sucsess');
     }
   };
-
-  //redirec if logged in
-  if (isAuthenticated) {
-    return <Redirect to='/dasboard' />;
-  }
   return (
     <Fragment>
       <h1 className='large text-primary'>Sign Up</h1>
       <p className='lead'>
-        <i className='fa fa-user' /> Create Your Account
+        <i className='fa fa-user'></i> Create Your Account
       </p>
       <form className='form' onSubmit={onSubmit}>
         <div className='form-group'>
@@ -46,6 +39,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             name='name'
             value={name}
             onChange={onChange}
+            required
           />
         </div>
         <div className='form-group'>
@@ -66,6 +60,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
             type='password'
             placeholder='Password'
             name='password'
+            minLength='6'
             value={password}
             onChange={onChange}
           />
@@ -74,8 +69,9 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
           <input
             type='password'
             placeholder='Confirm Password'
-            name='password2'
-            value={password2}
+            name='repassword'
+            minLength='6'
+            value={repassword}
             onChange={onChange}
           />
         </div>
@@ -90,10 +86,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
 
 Register.propTypes = {
   setAlert: PropTypes.func.isRequired,
-  register: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool,
-};
-const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated,
-});
-export default connect(mapStateToProps, { setAlert, register })(Register);
+}
+
+
+export default connect(null, { setAlert })(Register);
